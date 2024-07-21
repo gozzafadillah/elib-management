@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Buku;
 use App\Models\Kategori;
+use App\Models\Penerbit;
 use App\Models\Penulis;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -26,5 +27,10 @@ class DatabaseSeeder extends Seeder
         // Buku::factory(10)->create();
         Kategori::factory(5)->create();
         Penulis::factory(5)->create();
+        Penerbit::factory()->create([
+            'nama' => "PT BEST",
+            'alamat' => "JL Sukakarya No 40"
+
+        ]);
     }
 }

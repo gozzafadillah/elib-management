@@ -43,15 +43,23 @@ class BukuController extends Controller
                 'kategori_id' => $request->kategori_id,
                 'penerbit_id' => $request->penerbit_id,
                 'tahun_terbit' => $request->tahun_terbit,
+                'deskripsi' => $request->deskripsi,
                 'stok' => $request->stok,
                 'image_path' => $fileName,
                 'created_by' => $request->created_by,
                 'updated_by' => $request->updated_by,
+                'tipe_buku' => $request->tipe_buku,
             ]);
         }
 
 
         return redirect()->route('buku.index');
+    }
+
+    public function getBookById($id)
+    {
+        $buku = Buku::with('kategori', 'penerbit')->find($id);
+        return response()->json($buku);
     }
 
 

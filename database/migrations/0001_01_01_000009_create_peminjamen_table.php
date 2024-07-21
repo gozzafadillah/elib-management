@@ -17,7 +17,8 @@ return new class extends Migration
             $table->timestamp('tanggal_pinjam');
             $table->timestamp('tanggal_kembali');
             $table->timestamp('tanggal_pengembalian')->nullable(true);
-            $table->foreignId('invoice_number')->constrained('transaksi');
+            // foreign to invoice_number string in transaksi
+            $table->string('invoice_number');
             $table->timestamps();
         });
     }

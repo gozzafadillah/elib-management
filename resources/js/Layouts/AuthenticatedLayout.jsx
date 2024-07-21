@@ -17,7 +17,12 @@ export default function Authenticated({ user, header, children }) {
                         <div className="flex">
                             <div className="shrink-0 flex items-center">
                                 <Link href="/">
-                                    <ApplicationLogo className="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" />
+                                    {/* logo */}
+                                    <img
+                                        src="/storage/images/landing-pages/the-room.png"
+                                        alt="logo"
+                                        className="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200"
+                                    />
                                 </Link>
                             </div>
 
@@ -39,8 +44,8 @@ export default function Authenticated({ user, header, children }) {
                             </div>
                             <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                 <NavLink
-                                    href={route("dashboard")}
-                                    active={route().current("peminjaman")}
+                                    href={route("peminjaman.index")}
+                                    active={route().current("peminjaman.index")}
                                 >
                                     Peminjaman
                                 </NavLink>
@@ -53,14 +58,30 @@ export default function Authenticated({ user, header, children }) {
                                     Pengembalian
                                 </NavLink>
                             </div>
-                            <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink
-                                    href={route("pelanggan.index")}
-                                    active={route().current("pelanggan.index")}
-                                >
-                                    Pelanggan
-                                </NavLink>
-                            </div>
+                            {user.role === 1 && (
+                                <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                    <NavLink
+                                        href={route("keranjang.index")}
+                                        active={route().current(
+                                            "keranjang.index"
+                                        )}
+                                    >
+                                        Keranjang
+                                    </NavLink>
+                                </div>
+                            )}
+                            {user.role === 0 && (
+                                <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                    <NavLink
+                                        href={route("pelanggan.index")}
+                                        active={route().current(
+                                            "pelanggan.index"
+                                        )}
+                                    >
+                                        Pelanggan
+                                    </NavLink>
+                                </div>
+                            )}
                         </div>
 
                         <div className="hidden sm:flex sm:items-center sm:ms-6">
@@ -91,6 +112,9 @@ export default function Authenticated({ user, header, children }) {
                                     </Dropdown.Trigger>
 
                                     <Dropdown.Content>
+                                        <Dropdown.Link href="/">
+                                            Web
+                                        </Dropdown.Link>
                                         <Dropdown.Link
                                             href={route("profile.edit")}
                                         >
@@ -213,6 +237,7 @@ export default function Authenticated({ user, header, children }) {
                         </div>
 
                         <div className="mt-3 space-y-1">
+                            <ResponsiveNavLink href="/">Web</ResponsiveNavLink>
                             <ResponsiveNavLink href={route("profile.edit")}>
                                 Profile
                             </ResponsiveNavLink>

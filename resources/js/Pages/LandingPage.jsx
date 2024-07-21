@@ -1,17 +1,6 @@
 import { Link, Head } from "@inertiajs/react";
 
 export default function Welcome({ auth, laravelVersion, phpVersion, buku }) {
-    const handleImageError = () => {
-        document
-            .getElementById("screenshot-container")
-            ?.classList.add("!hidden");
-        document.getElementById("docs-card")?.classList.add("!row-span-1");
-        document
-            .getElementById("docs-card-content")
-            ?.classList.add("!flex-row");
-        document.getElementById("background")?.classList.add("!hidden");
-    };
-
     return (
         <>
             <Head title="Welcome" />
@@ -61,39 +50,24 @@ export default function Welcome({ auth, laravelVersion, phpVersion, buku }) {
                         <main className="mt-6">
                             {/* navigation bar */}
                             <nav className="grid grid-cols-1 gap-6 lg:grid-cols-3 py-10">
-                                <div className="flex items-center justify-center p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
-                                    <img
-                                        src="https://laravel.com/assets/img/welcome/docs.svg"
-                                        alt=""
-                                        className="w-16 h-16"
-                                        onError={handleImageError}
-                                    />
+                                <div className="flex items-center justify-center p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg hover:bg-gray-100 dark:hover:bg-gray-700 hover:shadow-2xl transition duration-300 ease-in-out cursor-pointer">
+                                    <i className="fa-solid fa-book text-xl"></i>
                                     <div className="ml-6">
                                         <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
                                             List Buku
                                         </h2>
                                     </div>
                                 </div>
-                                <div className="flex items-center justify-center p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
-                                    <img
-                                        src="https://laravel.com/assets/img/welcome/laracasts.svg"
-                                        alt=""
-                                        className="w-16 h-16"
-                                        onError={handleImageError}
-                                    />
+                                <div className="flex items-center justify-center p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg hover:bg-gray-100 dark:hover:bg-gray-700 hover:shadow-2xl transition duration-300 ease-in-out cursor-pointer">
+                                    <i className="fa-solid fa-building text-xl"></i>
                                     <div className="ml-6">
                                         <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
                                             Tentang Kami
                                         </h2>
                                     </div>
                                 </div>
-                                <div className="flex items-center justify-center p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
-                                    <img
-                                        src="https://laravel.com/assets/img/welcome/forum.svg"
-                                        alt=""
-                                        className="w-16 h-16"
-                                        onError={handleImageError}
-                                    />
+                                <div className="flex items-center justify-center p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg hover:bg-gray-100 dark:hover:bg-gray-700 hover:shadow-2xl transition duration-300 ease-in-out cursor-pointer">
+                                    <i className="fa-solid fa-address-book text-xl"></i>
                                     <div className="ml-6">
                                         <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
                                             Kontak Kami
@@ -101,6 +75,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion, buku }) {
                                     </div>
                                 </div>
                             </nav>
+
                             {/* card buku */}
                             {/* latest buku */}
                             <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">
@@ -129,7 +104,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion, buku }) {
                                             </p>
                                             <div className="flex items-center mt-4">
                                                 <button className="mx-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded text-xs">
-                                                    Preview
+                                                    Detail
                                                 </button>
                                             </div>
                                         </div>
@@ -164,7 +139,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion, buku }) {
                                             </p>
                                             <div className="flex items-center mt-4">
                                                 <button className="mx-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded text-xs">
-                                                    Preview
+                                                    Detail
                                                 </button>
                                             </div>
                                         </div>

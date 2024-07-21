@@ -2,20 +2,41 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, useForm } from "@inertiajs/react";
 import React, { useState } from "react";
 import { Inertia } from "@inertiajs/inertia";
+import ModalFormBuku from "./component/ModalFormBuku";
+import BookDetailModal from "./component/BookDetailModal";
 
 export default function DashboardBuku({ auth, categories, penerbit, buku }) {
     const { data, setData, processing, errors, reset } = useForm({
         id: null,
         judul: "",
         image_path: "",
+        deskripsi: "",
         kategori_id: "",
         stok: 0,
         penerbit_id: "",
         tahun_terbit: "",
+        tipe_buku: "",
     });
 
     const [showModal, setShowModal] = useState(false);
     const [editMode, setEditMode] = useState(false); // Track if we are in edit mode
+    const [selectedBook, setSelectedBook] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const handleBookClick = async (id) => {
+        try {
+            const response = await fetch(`/dashboard/buku/${id}`);
+            const bookData = await response.json();
+            setSelectedBook(bookData);
+            setIsModalOpen(true);
+        } catch (error) {
+            console.error("Failed to fetch book details:", error);
+        }
+    };
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setSelectedBook(null);
+    };
 
     const openModal = (book = null) => {
         if (book) {
@@ -24,10 +45,12 @@ export default function DashboardBuku({ auth, categories, penerbit, buku }) {
                 id: book.id,
                 judul: book.judul,
                 image_path: book.image_path,
+                deskripsi: book.deskripsi,
                 kategori_id: book.kategori_id,
                 stok: book.stok,
                 penerbit_id: book.penerbit_id,
                 tahun_terbit: book.tahun_terbit,
+                tipe_buku: book.tipe_buku,
             });
             setEditMode(true);
         } else {
@@ -36,17 +59,17 @@ export default function DashboardBuku({ auth, categories, penerbit, buku }) {
                 id: null,
                 judul: "",
                 image_path: "",
+                deskripsi: "",
                 kategori_id: "",
                 stok: 0,
                 penerbit_id: "",
                 tahun_terbit: "",
+                tipe_buku: "",
             });
             setEditMode(false);
         }
         setShowModal(true);
     };
-
-    console.log(data);
 
     const submit = (e) => {
         e.preventDefault();
@@ -55,9 +78,10 @@ export default function DashboardBuku({ auth, categories, penerbit, buku }) {
         formData.append("kategori_id", data.kategori_id);
         formData.append("penerbit_id", data.penerbit_id);
         formData.append("tahun_terbit", data.tahun_terbit);
+        formData.append("tipe_buku", data.tipe_buku);
         formData.append("stok", data.stok);
         formData.append("image_path", data.image_path); // Pastikan 'image_path' berisi file, bukan string path
-        console.log([...formData]); // Cetak isi formData untuk debug
+        formData.append("deskripsi", data.deskripsi);
         if (data.image_path instanceof File) {
             formData.append("image_path", data.image_path);
         } else {
@@ -120,14 +144,16 @@ export default function DashboardBuku({ auth, categories, penerbit, buku }) {
                         </div>
 
                         {/* Button to add books */}
-                        <div className="p-6 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
-                            <button
-                                onClick={() => openModal()}
-                                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                            >
-                                Add Buku
-                            </button>
-                        </div>
+                        {auth.user.role === 0 && (
+                            <div className="p-6 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+                                <button
+                                    onClick={() => openModal()}
+                                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                                >
+                                    Add Buku
+                                </button>
+                            </div>
+                        )}
 
                         {/* card buku */}
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-6">
@@ -152,20 +178,39 @@ export default function DashboardBuku({ auth, categories, penerbit, buku }) {
                                             {value.kategori.nama}
                                         </p>
                                         <div className="flex items-center mt-4">
-                                            <button
-                                                onClick={() => openModal(value)}
-                                                className="mx-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded text-xs"
-                                            >
-                                                Edit
-                                            </button>
-                                            <button
-                                                onClick={() =>
-                                                    deleteBuku(value.id)
-                                                }
-                                                className="mx-2 bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded text-xs"
-                                            >
-                                                Delete
-                                            </button>
+                                            {auth.user.role === 0 ? (
+                                                <>
+                                                    <button
+                                                        onClick={() =>
+                                                            openModal(value)
+                                                        }
+                                                        className="mx-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded text-xs"
+                                                    >
+                                                        Edit
+                                                    </button>
+                                                    <button
+                                                        onClick={() =>
+                                                            deleteBuku(value.id)
+                                                        }
+                                                        className="mx-2 bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded text-xs"
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <button
+                                                        onClick={() => {
+                                                            handleBookClick(
+                                                                value.id
+                                                            );
+                                                        }}
+                                                        className="mx-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded text-xs"
+                                                    >
+                                                        Detail
+                                                    </button>
+                                                </>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
@@ -175,131 +220,28 @@ export default function DashboardBuku({ auth, categories, penerbit, buku }) {
                 </div>
             </div>
 
-            {/* Modal Form */}
-            {showModal && (
-                // besaran modal sedikit lebih besar
-                <div className="fixed z-10 inset-0 overflow-y-auto bg-gray-500 bg-opacity-50 flex justify-center items-center">
-                    <div className="bg-white w-1/2 p-6 rounded-lg">
-                        <h2 className="text-lg font-bold mb-4">
-                            {editMode ? "Edit Buku" : "Add New Buku"}
-                        </h2>
-                        {/* content type */}
-                        <form onSubmit={submit}>
-                            <input
-                                type="text"
-                                value={data.judul}
-                                name="judul"
-                                onChange={(e) =>
-                                    setData("judul", e.target.value)
-                                }
-                                placeholder="Judul"
-                                className="border p-2 w-full"
-                            />
-                            {/* input asset image file and show image beside input file and image need bigest, input must type file */}
-                            <input
-                                type="file"
-                                name="image_path"
-                                onChange={(e) =>
-                                    setData("image_path", e.target.files[0])
-                                }
-                                className="border p-2 w-full mt-2"
-                            />
-
-                            {data.image_path &&
-                                (data.image_path instanceof File ? (
-                                    <img
-                                        src={URL.createObjectURL(
-                                            data.image_path
-                                        )}
-                                        alt="preview"
-                                        className="w-1/4 mt-2"
-                                    />
-                                ) : (
-                                    <img
-                                        src={
-                                            "/storage/images/buku/" +
-                                            data.image_path
-                                        }
-                                        alt="preview"
-                                        className="w-1/4 mt-2"
-                                    />
-                                ))}
-
-                            <select
-                                value={data.kategori_id}
-                                name="kategori_id"
-                                onChange={(e) =>
-                                    setData("kategori_id", e.target.value)
-                                }
-                                className="border p-2 w-full mt-2"
-                            >
-                                <option value="">Select Category</option>
-                                {categories.map((category) => (
-                                    <option
-                                        key={category.id}
-                                        value={category.id}
-                                    >
-                                        {category.nama}
-                                    </option>
-                                ))}
-                            </select>
-                            <input
-                                type="number"
-                                name="stok"
-                                value={data.stok}
-                                onChange={(e) =>
-                                    setData("stok", e.target.value)
-                                }
-                                placeholder="stok"
-                                className="border p-2 w-full mt-2"
-                            />
-                            <select
-                                value={data.penerbit_id}
-                                onChange={(e) =>
-                                    setData("penerbit_id", e.target.value)
-                                }
-                                name="penerbit_id"
-                                className="border p-2 w-full mt-2"
-                            >
-                                <option value="">Select Publisher</option>
-                                {penerbit.map((publisher) => (
-                                    <option
-                                        key={publisher.id}
-                                        value={publisher.id}
-                                    >
-                                        {publisher.nama}
-                                    </option>
-                                ))}
-                            </select>
-                            <input
-                                type="date"
-                                name="tahun_terbit"
-                                value={data.tahun_terbit}
-                                onChange={(e) =>
-                                    setData("tahun_terbit", e.target.value)
-                                }
-                                className="border p-2 w-full mt-2"
-                            />
-                            <div className="mt-4 flex justify-end">
-                                <button
-                                    type="button"
-                                    onClick={() => setShowModal(false)}
-                                    className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mr-2"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    type="submit"
-                                    disabled={processing}
-                                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                                >
-                                    Save
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+            {/* Modal for displaying book details */}
+            {selectedBook && (
+                <BookDetailModal
+                    book={selectedBook}
+                    isOpen={isModalOpen}
+                    onClose={closeModal}
+                />
             )}
+
+            {/* Modal Form */}
+            <ModalFormBuku
+                showModal={showModal}
+                setShowModal={setShowModal}
+                submit={submit}
+                data={data}
+                setData={setData}
+                categories={categories}
+                penerbit={penerbit}
+                editMode={editMode}
+                processing={processing}
+                errors={errors}
+            />
         </AuthenticatedLayout>
     );
 }

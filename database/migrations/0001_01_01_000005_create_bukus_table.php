@@ -18,6 +18,7 @@ return new class extends Migration
             $table->date('tahun_terbit')->nullable(true);
             $table->string('image_path')->nullable(true);
             $table->bigInteger('stok')->nullable(false);
+            $table->string('tipe_buku')->default('Local');
             $table->foreignId('penerbit_id')->constrained('penerbit');
             $table->foreignId('kategori_id')->constrained('kategori');
             $table->foreignId('created_by')->constrained('users');

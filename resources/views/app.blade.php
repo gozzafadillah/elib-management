@@ -20,6 +20,7 @@
 
 <body class="font-sans antialiased">
     @inertia
+    <script src="https://kit.fontawesome.com/18c8f9634d.js" crossorigin="anonymous"></script>
 </body>
 
 </html>
