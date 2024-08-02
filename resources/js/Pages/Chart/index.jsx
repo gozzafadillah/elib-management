@@ -28,8 +28,14 @@ export default function ChartBooks({ auth }) {
         setEndDate(newEndDate);
     }, [startDate]);
 
-    const borrowedBooks =
-        JSON.parse(localStorage.getItem("borrowedBooks")) || [];
+    const [borrowedBooks, setBorrowBooks] = useState([]);
+
+    useEffect(() => {
+        const books = JSON.parse(localStorage.getItem("borrowedBooks"));
+        if (books) {
+            setBorrowBooks(books);
+        }
+    }, []);
 
     const removeBook = (book) => {
         if (confirm("Apakah anda yakin ingin menghapus buku ini dari chart?")) {
@@ -45,6 +51,8 @@ export default function ChartBooks({ auth }) {
             start: startDate,
             end: endDate,
         });
+
+        localStorage.removeItem("borrowedBooks");
     };
 
     return (

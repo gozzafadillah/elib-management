@@ -11,4 +11,9 @@ class Transaksi extends Model
 
     protected $table = 'transaksi';
     protected $guarded = ['id'];
+
+    public function peminjaman()
+    {
+        return $this->belongsTo(Peminjaman::class, 'invoice_number', 'invoice_number');
+    }
 }

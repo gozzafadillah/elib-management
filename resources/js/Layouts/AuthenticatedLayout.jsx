@@ -25,7 +25,6 @@ export default function Authenticated({ user, header, children }) {
                                     />
                                 </Link>
                             </div>
-
                             <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                 <NavLink
                                     href={route("dashboard")}
@@ -52,10 +51,20 @@ export default function Authenticated({ user, header, children }) {
                             </div>
                             <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                 <NavLink
-                                    href={route("dashboard")}
-                                    active={route().current("pengembalian")}
+                                    href={route("pengembalian.index")}
+                                    active={route().current(
+                                        "pengembalian.index"
+                                    )}
                                 >
                                     Pengembalian
+                                </NavLink>
+                            </div>
+                            <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                <NavLink
+                                    href={route("transaksi.index")}
+                                    active={route().current("transaksi.index")}
+                                >
+                                    Transaksi
                                 </NavLink>
                             </div>
                             {user.role === 1 && (
@@ -210,8 +219,8 @@ export default function Authenticated({ user, header, children }) {
 
                     <div className="pt-2 pb-3 space-y-1">
                         <ResponsiveNavLink
-                            href={route("dashboard")}
-                            active={route().current("pengembalian")}
+                            href={route("pengembalian.index")}
+                            active={route().current("pengembalian.index")}
                         >
                             Pengembalian
                         </ResponsiveNavLink>

@@ -21,4 +21,9 @@ class Peminjaman extends Model
     {
         return $this->hasMany(P_Peminjaman::class, 'peminjaman_id');
     }
+
+    public function transaksi()
+    {
+        return $this->hasOne(Transaksi::class, 'invoice_number', 'invoice_number');
+    }
 }

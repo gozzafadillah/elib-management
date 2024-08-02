@@ -3,7 +3,9 @@
 use App\Http\Controllers\BukuController;
 use App\Http\Controllers\PelangganController;
 use App\Http\Controllers\PeminjamanController;
+use App\Http\Controllers\PengembalianController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TransaksiController;
 use App\Models\Buku;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -40,6 +42,13 @@ Route::delete('/dashboard/pelanggan/{pelanggan}', [PelangganController::class, '
 // peminjaman
 Route::get('/dashboard/peminjaman', [PeminjamanController::class, 'index'])->name('peminjaman.index');
 Route::post("/peminjaman-buku", [PeminjamanController::class, 'store'])->name('peminjaman.store');
+
+// pengembalian
+Route::get('/dashboard/pengembalian', [PengembalianController::class, 'index'])->name('pengembalian.index');
+
+// transaksi
+Route::get('/dashboard/transaksi', [TransaksiController::class, 'index'])->name('transaksi.index');
+Route::post('/dashboard/transaksi/pay', [TransaksiController::class, 'createInvoiceXendit'])->name('transaksi.pay');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
