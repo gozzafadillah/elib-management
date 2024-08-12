@@ -2,7 +2,7 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link } from "@inertiajs/react";
 import { useState } from "react";
 
-export default function PeminjamanDashboard({ auth, peminjaman }) {
+export default function PeminjamanAdminDashboard({ auth, peminjaman }) {
     const [isModalOpen, setModalOpen] = useState(false);
     const [selectedPeminjaman, setSelectedPeminjaman] = useState(null);
 
@@ -27,6 +27,30 @@ export default function PeminjamanDashboard({ auth, peminjaman }) {
             }
         >
             <Head title="Buku" />
+            <div className="py-12">
+                <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                    <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                        {/* search feature */}
+                        <div className="p-6 text-gray-900 dark:text-gray-100">
+                            <div className="flex justify-center">
+                                <input
+                                    type="text"
+                                    className="border border-gray-300 dark:border-gray-700 rounded-lg p-2 w-1/2"
+                                    placeholder="Cari berdasarkan Invoice"
+                                />
+
+                                <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mx-2 rounded">
+                                    Cari
+                                </button>
+
+                                <button className="bg-green-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 mx-2 rounded">
+                                    Export
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">

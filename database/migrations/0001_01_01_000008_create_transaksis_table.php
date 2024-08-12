@@ -16,6 +16,9 @@ return new class extends Migration
             $table->string('invoice_number')->nullable(false);
             $table->string('is_pay')->default('pending');
             $table->string('how_to_pay')->nullable(true);
+            $table->bigInteger('grand_total')->nullable(false);
+            $table->string('invoice_url')->nullable(true);
+            $table->string('invoce_id')->nullable(true);
             $table->timestamps();
         });
     }

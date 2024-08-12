@@ -23,6 +23,8 @@ return new class extends Migration
             $table->foreignId('kategori_id')->constrained('kategori');
             $table->foreignId('created_by')->constrained('users');
             $table->foreignId('updated_by')->constrained('users');
+            $table->timestamp('deleted_at')->nullable(true);
+            $table->foreignId('deleted_by')->nullable(true)->constrained('users');
             $table->timestamps();
         });
     }

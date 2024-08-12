@@ -17,6 +17,9 @@ return new class extends Migration
             $table->timestamp('tanggal_pinjam');
             $table->timestamp('tanggal_kembali');
             $table->timestamp('tanggal_pengembalian')->nullable(true);
+            $table->string('status')->nullable(true);
+            $table->bigInteger('telat')->nullable(true);
+            $table->bigInteger('sub_total')->nullable(true);
             // foreign to invoice_number string in transaksi
             $table->string('invoice_number');
             $table->timestamps();

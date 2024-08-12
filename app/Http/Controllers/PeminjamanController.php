@@ -6,6 +6,7 @@ use App\Models\P_Peminjaman;
 use App\Models\Pelanggan;
 use App\Models\Peminjaman;
 use App\Models\Transaksi;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -14,6 +15,12 @@ class PeminjamanController extends Controller
     public function index()
     {
         $customerID = auth()->user()->id;
+        $user = User::find($customerID);
+        if ($user->role == 0) {
+            return Inertia::render('Admin/Peminjaman/index', [
+                'peminjaman' => Peminjaman::with('pelanggan', 'p_peminjaman.buku')->get()
+            ]);
+        }
         $customer = Pelanggan::where('user_id', $customerID)->first()->id;
         return Inertia::render('Peminjaman/index', [
             'peminjaman' => Peminjaman::with('pelanggan', 'p_peminjaman.buku')->where('customer_id', $customer)->get()
@@ -43,6 +50,7 @@ class PeminjamanController extends Controller
             'tanggal_kembali' => $request->end,
             'customer_id' => $customer,
             'sub_total' => $harga,
+            'status' => 'Dipinjam'
         ]);
         $transaksi->create([
             'invoice_number' => $invoice,
@@ -56,8 +64,6 @@ class PeminjamanController extends Controller
                 'buku_id' => $value['id'],
             ]);
         }
-
-
 
         return redirect()->route('peminjaman.index');
     }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Pelanggan;
 use App\Models\Transaksi;
+use App\Models\User;
 use Inertia\Inertia;
 use Xendit\Configuration;
 use Xendit\Invoice\InvoiceApi;
@@ -15,6 +16,12 @@ class TransaksiController extends Controller
     public function index()
     {
         $id = auth()->user()->id;
+        $user = User::find($id);
+        if ($user->role == 0) {
+            return Inertia::render('Admin/Transaksi/index', [
+                'data' => Transaksi::with('peminjaman.pelanggan', 'peminjaman.p_peminjaman.buku')->get()
+            ]);
+        }
         $pelanggan = Pelanggan::where('user_id', $id)->first();
         return Inertia::render("Transaksi/index", [
             'data' => Transaksi::with('peminjaman.pelanggan', 'peminjaman.p_peminjaman.buku')->whereHas('peminjaman', function ($query) use ($pelanggan) {
@@ -27,6 +34,18 @@ class TransaksiController extends Controller
     {
         // get request invoice number
         $invoice_number = $request->invoice_number;
+        $howToPay = $request->how_to_pay;
+        if ($howToPay == 'cash') {
+            // update data transaksi
+            $transaksi = Transaksi::where('invoice_number', $invoice_number)->first();
+            $transaksi->update([
+                'is_pay' => 'Settled',
+                'payment_method' => 'cash',
+                'payment_date' => now(),
+            ]);
+
+            return redirect()->route('transaksi.index')->with('success', 'Pembayaran berhasil');
+        }
 
         // set xendit api key
         $xenditApiKey = env('XENDIT_SECRET_KEY');
@@ -80,5 +99,51 @@ class TransaksiController extends Controller
         } catch (\Throwable $th) {
             return redirect()->route('transaksi.index')->with('error', 'Gagal membuat invoice');
         }
+    }
+
+    // add invoice callback xendit
+    function getCallBack()
+    {
+        // Mendapatkan token dari environment
+        $token = env('OTP_Xendit_Callback');
+
+        // Mendapatkan header 'x-callback-token'
+        $xTokenCallback = $_SERVER['HTTP_X_CALLBACK_TOKEN'] ?? '';
+
+        // Memeriksa token untuk otorisasi
+        if ($xTokenCallback !== $token) {
+            http_response_code(401);
+            return json_encode(['error' => 'unauthorized']);
+        }
+
+        // Membaca body request
+        $requestBody = file_get_contents('php://input');
+
+        // Menguraikan JSON dari body request
+        $callbackData = json_decode($requestBody, true);
+
+        // Memeriksa apakah JSON valid
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            http_response_code(500);
+            return json_encode(['error' => 'internal server error']);
+        }
+
+        // Mengirimkan response header dan status
+        header('Content-Type: application/json');
+        http_response_code(200);
+
+        // Mengembalikan data callback yang telah di-decode
+        $data = json_encode($callbackData);
+
+        // update pembayaran
+        $transaksi = Transaksi::where('invoice_number', $callbackData['external_id'])->first();
+
+        $transaksi->update([
+            'is_pay' => 'Settled',
+            'how_to_pay' => $callbackData['payment_method'],
+            'updated_at' => $callbackData['paid_at'],
+        ]);
+
+        return $data;
     }
 }

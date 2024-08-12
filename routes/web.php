@@ -8,6 +8,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TransaksiController;
 use App\Models\Buku;
 use Illuminate\Foundation\Application;
+use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -17,7 +18,7 @@ Route::get('/', function () {
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
-        "buku" => Buku::with('kategori', 'penerbit')->get()
+        "buku" => Buku::with('kategori', 'penerbit')->whereNull('deleted_at')->get()
     ]);
 });
 
@@ -45,6 +46,7 @@ Route::post("/peminjaman-buku", [PeminjamanController::class, 'store'])->name('p
 
 // pengembalian
 Route::get('/dashboard/pengembalian', [PengembalianController::class, 'index'])->name('pengembalian.index');
+Route::post('/dashboard/pengembalian', [PengembalianController::class, 'pengembalianBuku'])->name('pengembalian.pengembalianBuku');
 
 // transaksi
 Route::get('/dashboard/transaksi', [TransaksiController::class, 'index'])->name('transaksi.index');
@@ -55,5 +57,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+// invoice callback
+Route::post('/callback/invoice', [TransaksiController::class, 'getCallBack']);
 
 require __DIR__ . '/auth.php';
