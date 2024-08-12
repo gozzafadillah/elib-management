@@ -59,6 +59,6 @@ class PengembalianController extends Controller
             'status' => 'Dikembalikan'
         ]);
 
-        return redirect()->route('pengembalian.index');
+        return Inertia::location(route('pengembalian.index'));
     }
 }

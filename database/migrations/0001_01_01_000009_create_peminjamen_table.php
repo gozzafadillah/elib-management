@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('peminjaman', function (Blueprint $table) {
             $table->id();
             $table->foreignId('customer_id')->constrained('pelanggan');
-            $table->timestamp('tanggal_pinjam');
-            $table->timestamp('tanggal_kembali');
-            $table->timestamp('tanggal_pengembalian')->nullable(true);
+            $table->datetime('tanggal_pinjam');
+            $table->datetime('tanggal_kembali');
+            $table->datetime('tanggal_pengembalian')->nullable(true);
             $table->string('status')->nullable(true);
             $table->bigInteger('telat')->nullable(true);
             $table->bigInteger('sub_total')->nullable(true);

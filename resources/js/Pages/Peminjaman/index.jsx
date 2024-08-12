@@ -81,8 +81,8 @@ export default function PeminjamanDashboard({ auth, peminjaman }) {
                                                 {item.tanggal_kembali}
                                             </td>
                                             <td className="border px-4 py-2">
-                                                {item.tanggal_pengembalian ==
-                                                null ? (
+                                                {item.status ==
+                                                "Dipinjam" ? (
                                                     <span className="bg-yellow-500 text-white font-bold py-1 px-2 rounded">
                                                         Dipinjam
                                                     </span>

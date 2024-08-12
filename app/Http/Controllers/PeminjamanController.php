@@ -65,7 +65,7 @@ class PeminjamanController extends Controller
             ]);
         }
 
-        return redirect()->route('peminjaman.index');
+        return Inertia::location(route('peminjaman.index'));
     }
 
     // buatkan function generate invoice

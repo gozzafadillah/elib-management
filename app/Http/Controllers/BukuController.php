@@ -15,7 +15,7 @@ class BukuController extends Controller
         return Inertia::render('Buku/index', [
             'categories' => Kategori::all(),
             'penerbit' => Penerbit::all(),
-            'buku' => Buku::with('kategori', 'penerbit')->get()
+            'buku' => Buku::with('kategori', 'penerbit')->whereNull('deleted_at')->get()
         ]);
     }
 
@@ -52,8 +52,8 @@ class BukuController extends Controller
             ]);
         }
 
+        return  Inertia::location(route('buku.index'));
 
-        return redirect()->route('buku.index');
     }
 
     public function getBookById($id)
@@ -102,21 +102,28 @@ class BukuController extends Controller
 
         ]);
 
-        return redirect()->route('buku.index');
+        return  Inertia::location(route('buku.index'));
+
     }
 
     public function destroy(Buku $buku)
     {
-        $buku->delete();
+        // soft delete
+        $buku->update([
+            'deleted_by' => auth()->user()->id,
+            'deleted_at' => now()
+        ]);
 
         // delete image
-        $image_path = public_path('storage/images/buku/' . $buku->image_path);
+        $image_path = storage_path('app/public/images/buku/' . $buku->image_path);
         if (file_exists(
             $image_path
         )) {
             unlink($image_path);
-        }
+        } 
 
-        return redirect()->route('buku.index');
+       
+        return  Inertia::location(route('buku.index'));
+
     }
 }

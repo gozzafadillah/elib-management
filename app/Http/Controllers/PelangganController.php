@@ -47,7 +47,8 @@ class PelangganController extends Controller
             'user_id' => $user->id,
         ]);
 
-        return redirect()->route('pelanggan.index');
+        return  Inertia::location(route('pelanggan.index'));
+
     }
 
     public function update(Request $request, Pelanggan $pelanggan)
@@ -74,7 +75,7 @@ class PelangganController extends Controller
             'telepon' => $request->telepon,
         ]);
 
-        return redirect()->route('pelanggan.index');
+        return  Inertia::location(route('pelanggan.index'));
     }
 
     public function destroy(Pelanggan $pelanggan)
@@ -84,6 +85,6 @@ class PelangganController extends Controller
         // delete users 
         $pelanggan->user->delete();
 
-        return redirect()->route('pelanggan.index');
+        return  Inertia::location(route('pelanggan.index'));
     }
 }
