@@ -7,6 +7,10 @@ use App\Http\Controllers\PengembalianController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TransaksiController;
 use App\Models\Buku;
+use App\Models\P_Peminjaman;
+use App\Models\Pelanggan;
+use App\Models\Peminjaman;
+use App\Models\Transaksi;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Support\Facades\Route;
@@ -27,7 +31,24 @@ Route::get("dashboard/keranjang", function () {
 })->name('keranjang.index');
 
 Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
+    $user = auth()->user()->role;
+    if ($user == 0) {
+        return Inertia::render('Dashboard', [
+            'card_1' => Pelanggan::count(),
+            'card_2' => Peminjaman::count(),
+            'card_3' => Transaksi::where('is_pay', 'Settled')->sum('grand_total'),
+        ]);
+    }
+    $user = auth()->user()->id;
+    $pengguna = Pelanggan::where('user_id', $user)->first();
+
+    return Inertia::render('Dashboard', [
+        'card_1' => Peminjaman::where('customer_id', $pengguna->id)->count(),
+        'card_2' => P_Peminjaman::whereHas('peminjaman', function ($query) use ($pengguna) {
+            $query->where('customer_id', $pengguna->id);
+        })->count(),
+        'card_3' => Peminjaman::where('customer_id', $pengguna->id)->where('status', 'Dikembalikan')->where('telat', '>', 0)->count(),
+    ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 Route::get('/dashboard/buku', [BukuController::class, 'index'])->name('buku.index');
 Route::post('/dashboard/buku', [BukuController::class, 'store'])->name('buku.store');
@@ -47,6 +68,9 @@ Route::post("/peminjaman-buku", [PeminjamanController::class, 'store'])->name('p
 // pengembalian
 Route::get('/dashboard/pengembalian', [PengembalianController::class, 'index'])->name('pengembalian.index');
 Route::post('/dashboard/pengembalian', [PengembalianController::class, 'pengembalianBuku'])->name('pengembalian.pengembalianBuku');
+Route::get('/dashboard/pengembalian/{id}', [PengembalianController::class, 'getById']);
+Route::get("/dashboard/pengembalian/{id}", [PengembalianController::class, 'formPengembalian'])->name("pengembalian.form");
+Route::post('/dashboard/pengembalian/bayarDenda', [PengembalianController::class, 'bayarDenda'])->name('pengembalian.bayarDenda');
 
 // transaksi
 Route::get('/dashboard/transaksi', [TransaksiController::class, 'index'])->name('transaksi.index');
