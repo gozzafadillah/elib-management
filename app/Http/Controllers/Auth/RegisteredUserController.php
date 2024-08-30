@@ -35,6 +35,9 @@ class RegisteredUserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'alamat' => 'required|min:8',
+            'no_telp' => 'required|min:11|max:13',
+            'nik' => 'required' 
         ]);
 
         $user = User::create([
@@ -49,11 +52,12 @@ class RegisteredUserController extends Controller
 
         // add to pelanggan
         Pelanggan::create([
-            'user_id' => $user->id,
+            'user_id' => $user->id ?? '1',
             'nama' => $user->name,
             'email' => $user->email,
             'alamat' => '',
-            'no_hp' => '',
+            'no_telp' => $request->no_telp,
+            'nik' => $request->nik
         ]);
 
         return redirect(route('dashboard', absolute: false));

@@ -5,13 +5,17 @@ import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import { Head, Link, useForm } from '@inertiajs/react';
+import { Textarea } from '@headlessui/react';
 
 export default function Register() {
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
         email: '',
+        nik: '',
         password: '',
         password_confirmation: '',
+        no_telp: '',
+        alamat: ''
     });
 
     useEffect(() => {
@@ -63,6 +67,55 @@ export default function Register() {
                     />
 
                     <InputError message={errors.email} className="mt-2" />
+                </div>
+
+                <div className="mt-4">
+                    <InputLabel htmlFor="NIK" value="NIK" />
+
+                    <TextInput
+                        id="NIK"
+                        type="text"
+                        name="NIK"
+                        value={data.nik}
+                        className="mt-1 block w-full"
+                        autoComplete="username"
+                        onChange={(e) => setData('nik', e.target.value)}
+                        required
+                    />
+
+                    <InputError message={errors.nik} className="mt-2" />
+                </div>
+                
+                <div className="mt-4">
+                    <InputLabel htmlFor="no_telp" value="No Telp" />
+
+                    <TextInput
+                        id="no_telp"
+                        type="text"
+                        name="no_telp"
+                        value={data.no_telp}
+                        className="mt-1 block w-full"
+                        autoComplete="username"
+                        onChange={(e) => setData('no_telp', e.target.value)}
+                        required
+                    />
+
+                    <InputError message={errors.no_telp} className="mt-2" />
+                </div>
+
+                <div className="mt-4">
+                    <InputLabel htmlFor="alamat" value="Alamat" />
+
+                    <Textarea
+                    id='alamat'
+                    className="mt-1 block w-full"
+                    name='alamat'
+                    onChange={(e) => setData('alamat', e.target.value)}
+                    required
+                    >
+                        {data.alamat}
+                    </Textarea>
+                    <InputError message={errors.alamat} className="mt-2" />
                 </div>
 
                 <div className="mt-4">

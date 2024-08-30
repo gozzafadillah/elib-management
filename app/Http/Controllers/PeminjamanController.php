@@ -70,8 +70,10 @@ class PeminjamanController extends Controller
 
     // buatkan function generate invoice
     public function generateInvoice()
-    {
-        $invoice = 'INV-' . date('YmdHis');
-        return $invoice;
-    }
+{
+    $time = strtotime('+7 hours');
+    $invoice = 'INV-' . date('YmdHis', $time);
+    return $invoice;
+}
+
 }
