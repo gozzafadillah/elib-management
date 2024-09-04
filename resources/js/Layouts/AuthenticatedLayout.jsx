@@ -1,5 +1,4 @@
 import { useState } from "react";
-import ApplicationLogo from "@/Components/ApplicationLogo";
 import Dropdown from "@/Components/Dropdown";
 import NavLink from "@/Components/NavLink";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink";
@@ -13,43 +12,36 @@ export default function Authenticated({ user, header, children }) {
         <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
             <nav className="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between h-16">
-                        <div className="flex">
-                            <div className="shrink-0 flex items-center">
+                    <div className="flex justify-between h-16 items-center">
+                        <div className="flex items-center">
+                            <div className="shrink-0">
                                 <Link href="/">
-                                    {/* logo */}
                                     <img
-                                        src="/storage/images/landing-pages/the-room.png"
+                                        src="https://res.cloudinary.com/dt91kxctr/image/upload/v1725191462/gk4ncoiz3kf04l32ysnm.png"
                                         alt="logo"
                                         className="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200"
                                     />
                                 </Link>
                             </div>
-                            <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                            <div className="hidden md:flex space-x-8 sm:-my-px sm:ms-10">
                                 <NavLink
                                     href={route("dashboard")}
                                     active={route().current("dashboard")}
                                 >
                                     Dashboard
                                 </NavLink>
-                            </div>
-                            <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                 <NavLink
                                     href={route("buku.index")}
                                     active={route().current("buku.index")}
                                 >
                                     Buku
                                 </NavLink>
-                            </div>
-                            <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                 <NavLink
                                     href={route("peminjaman.index")}
                                     active={route().current("peminjaman.index")}
                                 >
                                     Peminjaman
                                 </NavLink>
-                            </div>
-                            <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                 <NavLink
                                     href={route("pengembalian.index")}
                                     active={route().current(
@@ -58,17 +50,13 @@ export default function Authenticated({ user, header, children }) {
                                 >
                                     Pengembalian
                                 </NavLink>
-                            </div>
-                            <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                 <NavLink
                                     href={route("transaksi.index")}
                                     active={route().current("transaksi.index")}
                                 >
                                     Transaksi
                                 </NavLink>
-                            </div>
-                            {user.role === 1 && (
-                                <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                {user.role === 1 && (
                                     <NavLink
                                         href={route("keranjang.index")}
                                         active={route().current(
@@ -77,10 +65,8 @@ export default function Authenticated({ user, header, children }) {
                                     >
                                         Keranjang
                                     </NavLink>
-                                </div>
-                            )}
-                            {user.role === 0 && (
-                                <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                )}
+                                {user.role === 0 && (
                                     <NavLink
                                         href={route("pelanggan.index")}
                                         active={route().current(
@@ -89,10 +75,11 @@ export default function Authenticated({ user, header, children }) {
                                     >
                                         Pelanggan
                                     </NavLink>
-                                </div>
-                            )}
+                                )}
+                            </div>
                         </div>
 
+                        {/* Bagian Dropdown Profil Pengguna */}
                         <div className="hidden sm:flex sm:items-center sm:ms-6">
                             <div className="ms-3 relative">
                                 <Dropdown>
@@ -141,6 +128,7 @@ export default function Authenticated({ user, header, children }) {
                             </div>
                         </div>
 
+                        {/* Tombol Menu untuk Mobile */}
                         <div className="-me-2 flex items-center sm:hidden">
                             <button
                                 onClick={() =>
@@ -184,11 +172,11 @@ export default function Authenticated({ user, header, children }) {
                     </div>
                 </div>
 
+                {/* Menu Navigasi Mobile */}
                 <div
-                    className={
-                        (showingNavigationDropdown ? "block" : "hidden") +
-                        " sm:hidden"
-                    }
+                    className={`md:hidden ${
+                        showingNavigationDropdown ? "block" : "hidden"
+                    }`}
                 >
                     <div className="pt-2 pb-3 space-y-1">
                         <ResponsiveNavLink
@@ -197,36 +185,24 @@ export default function Authenticated({ user, header, children }) {
                         >
                             Dashboard
                         </ResponsiveNavLink>
-                    </div>
-
-                    <div className="pt-2 pb-3 space-y-1">
                         <ResponsiveNavLink
                             href={route("buku.index")}
                             active={route().current("buku.index")}
                         >
                             Buku
                         </ResponsiveNavLink>
-                    </div>
-
-                    <div className="pt-2 pb-3 space-y-1">
                         <ResponsiveNavLink
-                            href={route("dashboard")}
-                            active={route().current("peminjaman")}
+                            href={route("peminjaman.index")}
+                            active={route().current("peminjaman.index")}
                         >
                             Peminjaman
                         </ResponsiveNavLink>
-                    </div>
-
-                    <div className="pt-2 pb-3 space-y-1">
                         <ResponsiveNavLink
                             href={route("pengembalian.index")}
                             active={route().current("pengembalian.index")}
                         >
                             Pengembalian
                         </ResponsiveNavLink>
-                    </div>
-
-                    <div className="pt-2 pb-3 space-y-1">
                         <ResponsiveNavLink
                             href={route("pelanggan.index")}
                             active={route().current("pelanggan.index")}
@@ -234,7 +210,6 @@ export default function Authenticated({ user, header, children }) {
                             Pelanggan
                         </ResponsiveNavLink>
                     </div>
-
                     <div className="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
                         <div className="px-4">
                             <div className="font-medium text-base text-gray-800 dark:text-gray-200">
@@ -244,7 +219,6 @@ export default function Authenticated({ user, header, children }) {
                                 {user.email}
                             </div>
                         </div>
-
                         <div className="mt-3 space-y-1">
                             <ResponsiveNavLink href="/">Web</ResponsiveNavLink>
                             <ResponsiveNavLink href={route("profile.edit")}>

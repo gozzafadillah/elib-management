@@ -22,4 +22,9 @@ class Buku extends Model
     {
         return $this->belongsTo(Penerbit::class);
     }
+
+    public function p_penulis()
+    {
+        return $this->hasMany(P_Penulis::class, 'buku_id');
+    }
 }

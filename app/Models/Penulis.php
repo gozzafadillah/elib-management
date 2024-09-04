@@ -10,4 +10,11 @@ class Penulis extends Model
     use HasFactory;
 
     protected $table = 'penulis';
+
+    protected $guarded = ['id'];
+
+    public function p_penulis()
+    {
+        return $this->hasMany(P_Penulis::class, 'penulis_id', 'id');
+    }
 }

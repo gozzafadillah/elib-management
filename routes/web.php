@@ -22,7 +22,7 @@ Route::get('/', function () {
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
-        "buku" => Buku::with('kategori', 'penerbit')->whereNull('deleted_at')->get()
+        "buku" => Buku::with('kategori', 'penerbit')->whereNull('deleted_at')->get(),
     ]);
 });
 
@@ -37,6 +37,7 @@ Route::get('/dashboard', function () {
             'card_1' => Pelanggan::count(),
             'card_2' => Peminjaman::count(),
             'card_3' => Transaksi::where('is_pay', 'Settled')->sum('grand_total'),
+            "riwayatPengguna" => Transaksi::with("peminjaman.pelanggan", "peminjaman.p_peminjaman.buku")->latest()->get(),
         ]);
     }
     $user = auth()->user()->id;
@@ -48,6 +49,7 @@ Route::get('/dashboard', function () {
             $query->where('customer_id', $pengguna->id);
         })->count(),
         'card_3' => Peminjaman::where('customer_id', $pengguna->id)->where('status', 'Dikembalikan')->where('telat', '>', 0)->count(),
+        "riwayatPengguna" => Peminjaman::with("p_peminjaman.buku", "p_peminjaman.buku.penerbit", "p_peminjaman.buku.kategori")->where('customer_id', $pengguna->id)->latest()->get(),
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 Route::get('/dashboard/buku', [BukuController::class, 'index'])->name('buku.index');

@@ -1,7 +1,14 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
 
-export default function Dashboard({ auth, card_1, card_2, card_3 }) {
+export default function Dashboard({
+    auth,
+    card_1,
+    card_2,
+    card_3,
+    riwayatPengguna,
+}) {
+    console.log(riwayatPengguna);
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -103,83 +110,49 @@ export default function Dashboard({ auth, card_1, card_2, card_3 }) {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {/* Example rows, replace with dynamic data */}
-                                        <tr>
-                                            <td className="px-5 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
-                                                1
-                                            </td>
-                                            <td className="px-5 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
-                                                INV-001
-                                            </td>
-                                            <td className="px-5 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
-                                                Fikri Haikal
-                                            </td>
-                                            <td className="px-5 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
-                                                2024-08-16
-                                            </td>
-                                            <td className="px-5 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
-                                                Selesai
-                                            </td>
-                                            <td className="px-5 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
-                                                Tidak
-                                            </td>
-                                            <td className="px-5 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
-                                                <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                                    Detail
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td className="px-5 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
-                                                2
-                                            </td>
-                                            <td className="px-5 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
-                                                INV-002
-                                            </td>
-                                            <td className="px-5 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
-                                                Muhammad Fadillah Abdul Aziz
-                                            </td>
-                                            <td className="px-5 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
-                                                2024-08-16
-                                            </td>
-                                            <td className="px-5 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
-                                                Selesai
-                                            </td>
-                                            <td className="px-5 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
-                                                Tidak
-                                            </td>
-                                            <td className="px-5 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
-                                                <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                                    Detail
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td className="px-5 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
-                                                1
-                                            </td>
-                                            <td className="px-5 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
-                                                INV-001
-                                            </td>
-                                            <td className="px-5 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
-                                                Niki Rahmat
-                                            </td>
-                                            <td className="px-5 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
-                                                2024-08-15
-                                            </td>
-                                            <td className="px-5 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
-                                                Selesai
-                                            </td>
-                                            <td className="px-5 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
-                                                Tidak
-                                            </td>
-                                            <td className="px-5 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
-                                                <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                                    Detail
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        {/* Repeat for more rows */}
+                                        {riwayatPengguna?.map(
+                                            (value, index) => (
+                                                <tr key={index}>
+                                                    <td className="px-5 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
+                                                        {index + 1}
+                                                    </td>
+                                                    <td className="px-5 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
+                                                        {value.invoice_number}
+                                                    </td>
+                                                    <td className="px-5 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
+                                                        {
+                                                            value.peminjaman
+                                                                .pelanggan.nama
+                                                        }
+                                                    </td>
+                                                    <td className="px-5 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
+                                                        {
+                                                            value.peminjaman
+                                                                .tanggal_pinjam
+                                                        }
+                                                    </td>
+                                                    <td className="px-5 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
+                                                        {value.peminjaman
+                                                            .status ===
+                                                        "Dikembalikan"
+                                                            ? value.peminjaman
+                                                                  .status
+                                                            : "Dipinjam"}
+                                                    </td>
+                                                    <td className="px-5 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
+                                                        {value.peminjaman
+                                                            .telat == null
+                                                            ? "Sedang Dipinjam"
+                                                            : `${value.peminjaman.telat} Hari`}
+                                                    </td>
+                                                    <td className="px-5 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
+                                                        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                                            Detail
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            )
+                                        )}
                                     </tbody>
                                 </table>
                             </div>
@@ -270,65 +243,29 @@ export default function Dashboard({ auth, card_1, card_2, card_3 }) {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {/* Example rows, replace with dynamic data */}
-                                        <tr>
-                                            <td className="px-5 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
-                                                1
-                                            </td>
-                                            <td className="px-5 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
-                                                INV-001
-                                            </td>
-                                            <td className="px-5 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
-                                                Rp 500,000
-                                            </td>
-                                            <td className="px-5 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
-                                                Selesai
-                                            </td>
-                                            <td className="px-5 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
-                                                <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                                    Detail
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td className="px-5 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
-                                                2
-                                            </td>
-                                            <td className="px-5 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
-                                                INV-002
-                                            </td>
-                                            <td className="px-5 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
-                                                Rp 1,200,000
-                                            </td>
-                                            <td className="px-5 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
-                                                Pending
-                                            </td>
-                                            <td className="px-5 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
-                                                <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                                    Detail
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td className="px-5 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
-                                                3
-                                            </td>
-                                            <td className="px-5 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
-                                                INV-003
-                                            </td>
-                                            <td className="px-5 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
-                                                Rp 750,000
-                                            </td>
-                                            <td className="px-5 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
-                                                Selesai
-                                            </td>
-                                            <td className="px-5 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
-                                                <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                                    Detail
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        {/* Repeat for more rows */}
+                                        {riwayatPengguna?.map(
+                                            (value, index) => (
+                                                <tr key={index}>
+                                                    <td className="px-5 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
+                                                        {index + 1}
+                                                    </td>
+                                                    <td className="px-5 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
+                                                        {value.invoice_number}
+                                                    </td>
+                                                    <td className="px-5 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
+                                                        Rp {value.sub_total}
+                                                    </td>
+                                                    <td className="px-5 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
+                                                        {value.status}
+                                                    </td>
+                                                    <td className="px-5 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
+                                                        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                                            Detail
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            )
+                                        )}
                                     </tbody>
                                 </table>
                             </div>

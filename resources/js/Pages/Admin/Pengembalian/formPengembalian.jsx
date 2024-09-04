@@ -25,6 +25,7 @@ const FormPengembalian = ({ data, totalBayarDenda }) => {
             {/* logo */}
             <div className="flex justify-center items-center mb-4">
                 <img
+                    // src="https://res.cloudinary.com/dt91kxctr/image/upload/v1725191462/gk4ncoiz3kf04l32ysnm.png"
                     src="/storage/images/landing-pages/the-room.png"
                     alt="logo"
                     className="w-auto h-20"
@@ -85,7 +86,7 @@ const FormPengembalian = ({ data, totalBayarDenda }) => {
                         }
                         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md mt-4"
                     >
-                        Bayar Denda
+                        Konfirmasi
                     </button>
                     <button
                         onClick={() =>

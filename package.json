@@ -22,7 +22,10 @@
     "dependencies": {
         "@inertiajs/inertia-react": "^0.8.1",
         "@yudiel/react-qr-scanner": "^2.0.8",
+        "laravel-echo": "^1.16.1",
+        "pusher-js": "^8.4.0-rc2",
         "react-barcode": "^1.5.3",
-        "react-qr-code": "^2.0.15"
+        "react-qr-code": "^2.0.15",
+        "react-toastify": "^10.0.5"
     }
 }

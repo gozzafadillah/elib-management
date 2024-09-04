@@ -1,3 +1,5 @@
+import React, { useState, useEffect } from "react";
+
 const ModalFormBuku = ({
     showModal,
     data,
@@ -8,18 +10,93 @@ const ModalFormBuku = ({
     editMode,
     categories,
     penerbit,
+    penulisList, // daftar penulis yang sudah ada
 }) => {
+    // State untuk menampung daftar penulis sebagai array objek
+    const [penulis, setPenulis] = useState(
+        data.penulis || [{ id: 0, nama: "" }]
+    );
+
+    console.log(data);
+
+    // State untuk penerbit sebagai objek { id, nama }
+    const [publisher, setPublisher] = useState({
+        id: data.penerbit_id || 0,
+        nama: penerbit.find((p) => p.id === data.penerbit_id)?.nama || "",
+    });
+    useEffect(() => {
+        // Set penerbit jika data berubah
+        setPublisher({
+            id: data.penerbit_id || 0,
+            nama: penerbit.find((p) => p.id === data.penerbit_id)?.nama || "",
+        });
+    }, [data.penerbit_id]);
+
+    useEffect(() => {
+        // Set penulis jika data berubah
+        setPenulis(data.penulis || [{ id: 0, nama: "" }]);
+    }, [data]);
+
+    const handlePenulisChange = (index, value) => {
+        // Cari penulis berdasarkan nama yang dipilih
+        const selectedPenulis = penulisList.find((p) => p.nama === value);
+
+        const updatedPenulis = [...penulis];
+        // Jika penulis ditemukan, perbarui objek dengan id dan nama
+        // Jika tidak ditemukan, buat objek baru dengan id = 0
+        updatedPenulis[index] = selectedPenulis
+            ? { id: selectedPenulis.id, nama: selectedPenulis.nama }
+            : { id: 0, nama: value };
+
+        setPenulis(updatedPenulis);
+        setData("penulis", updatedPenulis);
+    };
+
+    const addPenulisField = () => {
+        setPenulis([...penulis, { id: 0, nama: "" }]);
+    };
+
+    const removePenulisField = (index) => {
+        const updatedPenulis = penulis.filter((_, i) => i !== index);
+        setPenulis(updatedPenulis);
+        setData("penulis", updatedPenulis);
+    };
+
+    const handlePublisherChange = (value) => {
+        const selectedPublisher = penerbit.find((p) => p.nama === value);
+
+        if (selectedPublisher) {
+            // Jika ditemukan, gunakan objek yang ada
+            setPublisher({
+                id: selectedPublisher.id,
+                nama: selectedPublisher.nama,
+            });
+            setData("penerbit", {
+                id: selectedPublisher.id,
+                nama: selectedPublisher.nama,
+            });
+        } else {
+            // Jika tidak ditemukan, gunakan id 0 untuk penerbit baru
+            setPublisher({ id: 0, nama: value });
+            setData("penerbit", { id: 0, nama: value });
+        }
+    };
+
+    useEffect(() => {
+        // Sinkronisasi data penerbit setiap kali publisher state berubah
+        setData("penerbit_id", publisher.id);
+        setData("penerbit_nama", publisher.nama);
+    }, [publisher]); // Memastikan perubahan disimpan ke data
+
     return (
         <>
             {/* Modal Form */}
             {showModal && (
-                // besaran modal sedikit lebih besar
                 <div className="fixed z-10 inset-0 overflow-y-auto bg-gray-500 bg-opacity-50 flex justify-center items-center">
                     <div className="bg-white w-1/2 p-6 rounded-lg">
                         <h2 className="text-lg font-bold mb-4">
                             {editMode ? "Edit Buku" : "Add New Buku"}
                         </h2>
-                        {/* content type */}
                         <form onSubmit={submit}>
                             <input
                                 type="text"
@@ -31,7 +108,6 @@ const ModalFormBuku = ({
                                 placeholder="Judul"
                                 className="border p-2 w-full"
                             />
-                            {/* input asset image file and show image beside input file and image need bigest, input must type file */}
                             <input
                                 type="file"
                                 name="image_path"
@@ -52,10 +128,7 @@ const ModalFormBuku = ({
                                     />
                                 ) : (
                                     <img
-                                        src={
-                                            "/storage/images/buku/" +
-                                            data.image_path
-                                        }
+                                        src={data.image_path}
                                         alt="preview"
                                         className="w-1/4 mt-2"
                                     />
@@ -98,25 +171,75 @@ const ModalFormBuku = ({
                                 placeholder="stok"
                                 className="border p-2 w-full mt-2"
                             />
-                            <select
-                                value={data.penerbit_id}
+                            {/* Input yang bisa diketik untuk penerbit */}
+                            <input
+                                list="penerbitList"
+                                value={publisher.nama}
                                 onChange={(e) =>
-                                    setData("penerbit_id", e.target.value)
+                                    handlePublisherChange(e.target.value)
                                 }
-                                name="penerbit_id"
+                                placeholder="Pilih atau Tambah Penerbit"
                                 className="border p-2 w-full mt-2"
-                            >
-                                <option value="">Select Publisher</option>
+                            />
+                            <datalist id="penerbitList">
                                 {penerbit.map((publisher) => (
                                     <option
                                         key={publisher.id}
-                                        value={publisher.id}
-                                    >
-                                        {publisher.nama}
-                                    </option>
+                                        value={publisher.nama}
+                                    />
                                 ))}
-                            </select>
-                            {/* tambahkan select untuk tipe_buku (Import atau Local) */}
+                            </datalist>
+
+                            {/* Input untuk multiple penulis */}
+                            <div className="mt-4">
+                                <label className="font-bold">Penulis:</label>
+                                {penulis.map((penulisItem, index) => (
+                                    <div
+                                        key={index}
+                                        className="flex items-center mt-2"
+                                    >
+                                        <input
+                                            list="penulisList"
+                                            type="text"
+                                            value={penulisItem.nama}
+                                            onChange={(e) =>
+                                                handlePenulisChange(
+                                                    index,
+                                                    e.target.value
+                                                )
+                                            }
+                                            placeholder="Pilih atau Tambah Penulis"
+                                            className="border p-2 w-full"
+                                        />
+                                        <datalist id="penulisList">
+                                            {penulisList.map((item, i) => (
+                                                <option
+                                                    key={i}
+                                                    value={item.nama}
+                                                />
+                                            ))}
+                                        </datalist>
+                                        {penulis.length > 1 && (
+                                            <button
+                                                type="button"
+                                                onClick={() =>
+                                                    removePenulisField(index)
+                                                }
+                                                className="ml-2 bg-red-500 text-white px-2 py-1 rounded"
+                                            >
+                                                Hapus
+                                            </button>
+                                        )}
+                                    </div>
+                                ))}
+                                <button
+                                    type="button"
+                                    onClick={addPenulisField}
+                                    className="mt-2 bg-green-500 text-white px-4 py-2 rounded"
+                                >
+                                    Tambah Penulis
+                                </button>
+                            </div>
                             <select
                                 value={data.tipe_buku}
                                 onChange={(e) =>

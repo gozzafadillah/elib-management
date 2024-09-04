@@ -1,22 +1,57 @@
+import React, { useEffect, useState } from "react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
-import { useState } from "react";
 import QRCode from "react-qr-code";
+import Echo from "laravel-echo";
+import Pusher from "pusher-js";
 
-export default function PengembalianDashboard({ auth, data }) {
+window.Pusher = Pusher; // Menyediakan Pusher ke global window object
+
+const echo = new Echo({
+    broadcaster: "pusher",
+    key: "5685301a3db72a420893", // Atur key Pusher Anda
+    cluster: "ap1", // Atur cluster Pusher Anda
+    forceTLS: true, // Gunakan TLS untuk koneksi aman
+    encrypted: true,
+});
+
+export default function PengembalianDashboard({ auth, data: initialData }) {
+    const [data, setData] = useState(initialData); // Deklarasi state dengan useState
     const [isModalOpen, setModalOpen] = useState(false);
     const [buku, setBuku] = useState(null);
     const [showQR, setShowQR] = useState(false);
 
+    useEffect(() => {
+        // Mendengarkan event 'BookReturned' dari channel 'book-return'
+        echo.channel("book-return").listen("BookReturned", (e) => {
+            console.log("Book returned:", e.book);
+
+            // Perbarui state dengan data buku yang dikembalikan
+            setData((prevData) => {
+                const updatedData = prevData.map((item) =>
+                    item.id === e.book.id ? e.book : item
+                );
+                return updatedData;
+            });
+
+            setModalOpen(false); // Tutup modal
+        });
+
+        // Membersihkan listener saat komponen unmount
+        return () => {
+            echo.leave("book-return");
+        };
+    }, []);
+
     const getBuku = (buku) => {
         setBuku(buku);
         setModalOpen(true);
-        setShowQR(false); // Reset QR code display when opening the modal
+        setShowQR(false); // Reset tampilan kode QR saat membuka modal
     };
 
     const closeModal = () => {
         setModalOpen(false);
-        setBuku(null); // Reset buku state when closing modal
+        setBuku(null); // Reset state buku saat modal ditutup
     };
 
     const toggleQRCode = () => {
@@ -75,19 +110,20 @@ export default function PengembalianDashboard({ auth, data }) {
                                                 {index + 1}
                                             </td>
                                             <td className="border px-4 py-2">
-                                                {item.invoice_number}
+                                                {item?.invoice_number}
                                             </td>
                                             <td className="border px-4 py-2">
-                                                {item.pelanggan.nama}
+                                                {item.pelanggan?.nama}
                                             </td>
                                             <td className="border px-4 py-2">
-                                                {item.tanggal_pinjam}
+                                                {item?.tanggal_pinjam}
                                             </td>
                                             <td className="border px-4 py-2">
-                                                {item.tanggal_kembali}
+                                                {item?.tanggal_kembali}
                                             </td>
                                             <td className="border px-4 py-2">
-                                                {item.tanggal_pengembalian ? (
+                                                {item?.status ===
+                                                "Dikembalikan" ? (
                                                     <span className="bg-green-500 text-white font-bold py-2 px-4 mx-2 rounded">
                                                         Selesai
                                                     </span>
@@ -132,23 +168,24 @@ export default function PengembalianDashboard({ auth, data }) {
                         </div>
                         <div className="mt-4">
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                {buku.p_peminjaman.map((item, index) => (
-                                    <div
-                                        className="flex flex-col p-4 border border-gray-200 rounded"
-                                        key={index}
-                                    >
-                                        <h3 className="text-lg font-semibold">
-                                            {item.buku.judul}
-                                        </h3>
-                                        <p className="text-sm text-gray-500">
-                                            Tahun Terbit:{" "}
-                                            {item.buku.tahun_terbit}
-                                        </p>
-                                        <p className="text-sm text-gray-500">
-                                            Tipe Buku: {item.buku.tipe_buku}
-                                        </p>
-                                    </div>
-                                ))}
+                                {buku &&
+                                    buku.p_peminjaman.map((item, index) => (
+                                        <div
+                                            className="flex flex-col p-4 border border-gray-200 rounded"
+                                            key={index}
+                                        >
+                                            <h3 className="text-lg font-semibold">
+                                                {item.buku.judul}
+                                            </h3>
+                                            <p className="text-sm text-gray-500">
+                                                Tahun Terbit:{" "}
+                                                {item.buku.tahun_terbit}
+                                            </p>
+                                            <p className="text-sm text-gray-500">
+                                                Tipe Buku: {item.buku.tipe_buku}
+                                            </p>
+                                        </div>
+                                    ))}
                             </div>
                             <div className="flex flex-col gap-3 w-auto items-center mt-4">
                                 <button

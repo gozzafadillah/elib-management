@@ -1,11 +1,20 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, useForm } from "@inertiajs/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Inertia } from "@inertiajs/inertia";
 import ModalFormBuku from "./component/ModalFormBuku";
 import BookDetailModal from "./component/BookDetailModal";
+import { ToastContainer, toast } from "react-toastify";
+import { usePage } from "@inertiajs/react";
+import "react-toastify/dist/ReactToastify.css";
 
-export default function DashboardBuku({ auth, categories, penerbit, buku }) {
+export default function DashboardBuku({
+    auth,
+    categories,
+    penerbit,
+    buku,
+    penulis,
+}) {
     const { data, setData, processing, errors, reset } = useForm({
         id: null,
         judul: "",
@@ -13,15 +22,31 @@ export default function DashboardBuku({ auth, categories, penerbit, buku }) {
         deskripsi: "",
         kategori_id: "",
         stok: 0,
-        penerbit_id: "",
+        penerbit: { id: 0, nama: "" }, // Menggunakan objek untuk penerbit
         tahun_terbit: "",
         tipe_buku: "",
+        penulis: [],
     });
 
     const [showModal, setShowModal] = useState(false);
     const [editMode, setEditMode] = useState(false); // Track if we are in edit mode
     const [selectedBook, setSelectedBook] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    // Mendapatkan flash messages dari server-side
+    const { flash } = usePage().props;
+
+    useEffect(() => {
+        console.log("ini flash : ", flash);
+
+        // Jika ada pesan sukses dari server
+        if (flash?.success) {
+            toast.success(flash?.success);
+        }
+        // Jika ada pesan error dari server
+        if (flash?.error) {
+            toast.error(flash?.error);
+        }
+    }, [flash]);
 
     const handleBookClick = async (id) => {
         try {
@@ -51,6 +76,8 @@ export default function DashboardBuku({ auth, categories, penerbit, buku }) {
                 penerbit_id: book.penerbit_id,
                 tahun_terbit: book.tahun_terbit,
                 tipe_buku: book.tipe_buku,
+                penulis: book.penulis,
+                p_penulis: book.p_penulis,
             });
             setEditMode(true);
         } else {
@@ -62,9 +89,10 @@ export default function DashboardBuku({ auth, categories, penerbit, buku }) {
                 deskripsi: "",
                 kategori_id: "",
                 stok: 0,
-                penerbit_id: "",
+                penerbit_id: null,
                 tahun_terbit: "",
                 tipe_buku: "",
+                penulis: [],
             });
             setEditMode(false);
         }
@@ -76,12 +104,13 @@ export default function DashboardBuku({ auth, categories, penerbit, buku }) {
         const formData = new FormData();
         formData.append("judul", data.judul);
         formData.append("kategori_id", data.kategori_id);
-        formData.append("penerbit_id", data.penerbit_id);
+        formData.append("penerbit_id", JSON.stringify(data.penerbit)); // Kirim sebagai objek
         formData.append("tahun_terbit", data.tahun_terbit);
         formData.append("tipe_buku", data.tipe_buku);
         formData.append("stok", data.stok);
         formData.append("image_path", data.image_path); // Pastikan 'image_path' berisi file, bukan string path
         formData.append("deskripsi", data.deskripsi);
+        formData.append("penulis", JSON.stringify(data.penulis));
         if (data.image_path instanceof File) {
             formData.append("image_path", data.image_path);
         } else {
@@ -101,7 +130,10 @@ export default function DashboardBuku({ auth, categories, penerbit, buku }) {
                     reset();
                 },
                 onError: (errors) => {
-                    console.log("Submission errors:", errors);
+                    // Menampilkan notifikasi untuk setiap kesalahan validasi
+                    Object.keys(errors).forEach((field) => {
+                        toast.error(errors[field]);
+                    });
                 },
             });
         } else {
@@ -113,7 +145,10 @@ export default function DashboardBuku({ auth, categories, penerbit, buku }) {
                     reset();
                 },
                 onError: (errors) => {
-                    console.log("Submission errors:", errors);
+                    // Menampilkan notifikasi untuk setiap kesalahan validasi
+                    Object.keys(errors).forEach((field) => {
+                        toast.error(errors[field]);
+                    });
                 },
             });
         }
@@ -121,7 +156,14 @@ export default function DashboardBuku({ auth, categories, penerbit, buku }) {
 
     const deleteBuku = async (id) => {
         if (confirm("Are you sure you want to delete this book?")) {
-            Inertia.delete(`buku/${id}`);
+            Inertia.delete(`buku/${id}`, {
+                onSuccess: () => {
+                    toast.success("Buku berhasil dihapus");
+                },
+                onError: () => {
+                    toast.error("Gagal menghapus buku");
+                },
+            });
         }
     };
 
@@ -134,13 +176,17 @@ export default function DashboardBuku({ auth, categories, penerbit, buku }) {
                 </h2>
             }
         >
+            <ToastContainer />
+
             <Head title="Buku" />
 
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                        <div className="p-6 text-gray-900 dark:text-gray-100">
-                            Data Buku
+                        <div className="flex flex-row">
+                            <div className="p-6 text-gray-900 dark:text-gray-100">
+                                List Buku
+                            </div>
                         </div>
 
                         {/* Button to add books */}
@@ -163,10 +209,7 @@ export default function DashboardBuku({ auth, categories, penerbit, buku }) {
                                     className="bg-white dark:bg-gray-800 overflow-hidden shadow-lg rounded-lg border border-gray-200 dark:border-gray-700"
                                 >
                                     <img
-                                        src={
-                                            "/storage/images/buku/" +
-                                            value.image_path
-                                        }
+                                        src={value.image_path}
                                         alt={value.judul}
                                         className="w-full h-48 object-cover"
                                     />
@@ -241,6 +284,7 @@ export default function DashboardBuku({ auth, categories, penerbit, buku }) {
                 editMode={editMode}
                 processing={processing}
                 errors={errors}
+                penulisList={penulis}
             />
         </AuthenticatedLayout>
     );

@@ -21,6 +21,8 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'email_token',
+        "email_verified_at",
     ];
 
     // relasi one to one dengan pelanggan

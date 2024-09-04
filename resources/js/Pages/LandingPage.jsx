@@ -8,9 +8,9 @@ export default function Welcome({ auth, laravelVersion, phpVersion, buku }) {
     const [currentImage, setCurrentImage] = useState(0);
 
     const images = [
-        "/storage/images/landing-pages/hero-the-room-1.jpeg",
-        "/storage/images/landing-pages/hero-the-room-2.jpeg",
-        "/storage/images/landing-pages/hero-the-room-3.jpeg",
+        "https://res.cloudinary.com/dt91kxctr/image/upload/v1725191475/fo2jkp5y8zldktimsigi.jpg",
+        "https://res.cloudinary.com/dt91kxctr/image/upload/v1725191467/mpmw8c1uj3ysbrrg5usd.jpg",
+        "https://res.cloudinary.com/dt91kxctr/image/upload/v1725191462/y4owjaxhkch6nusuj8lr.jpg",
     ];
 
     useEffect(() => {
@@ -50,7 +50,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion, buku }) {
                 >
                     <div className="flex justify-center lg:justify-start">
                         <img
-                            src="/storage/images/landing-pages/the-room.png"
+                            src="https://res.cloudinary.com/dt91kxctr/image/upload/v1725191462/gk4ncoiz3kf04l32ysnm.png"
                             alt="The Room 19"
                             className="w-32 h-auto"
                         />
@@ -152,10 +152,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion, buku }) {
                                     className="bg-white dark:bg-gray-800 overflow-hidden shadow-lg rounded-lg border border-gray-200 dark:border-gray-700"
                                 >
                                     <img
-                                        src={
-                                            "/storage/images/buku/" +
-                                            value.image_path
-                                        }
+                                        src={value.image_path}
                                         alt={value.judul}
                                         className="w-full h-48 object-cover"
                                     />
@@ -187,10 +184,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion, buku }) {
                                     className="bg-white dark:bg-gray-800 overflow-hidden shadow-lg rounded-lg border border-gray-200 dark:border-gray-700"
                                 >
                                     <img
-                                        src={
-                                            "/storage/images/buku/" +
-                                            value.image_path
-                                        }
+                                        src={value.image_path}
                                         alt={value.judul}
                                         className="w-full h-48 object-cover"
                                     />

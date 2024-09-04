@@ -31,7 +31,7 @@ const BookDetailModal = ({ book, isOpen, onClose }) => {
                     {/* Image container */}
                     <div className="md:w-1/2">
                         <img
-                            src={`/storage/images/buku/${book.image_path}`}
+                            src={`${book.image_path}`}
                             alt={book.judul}
                             className="object-cover w-full h-full rounded-l-lg"
                         />

@@ -22,7 +22,7 @@ export default function PeminjamanAdminDashboard({ auth, peminjaman }) {
             user={auth.user}
             header={
                 <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                    Keranjang Saya
+                    Peminjaman Saya
                 </h2>
             }
         >
@@ -67,26 +67,56 @@ export default function PeminjamanAdminDashboard({ auth, peminjaman }) {
                                 </Link>
                             </div>
                         </div>
-                        <div className="p-6 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
-                            <table className="table-auto w-full mt-4">
-                                <thead>
+                        <div className="p-6 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 overflow-x-auto">
+                            <table className="min-w-full divide-y divide-gray-200">
+                                <thead className="bg-gray-50">
                                     <tr>
-                                        <th className="px-4 py-2">No</th>
-                                        <th className="px-4 py-2">Invoice</th>
-                                        <th className="px-4 py-2">
+                                        <th
+                                            scope="col"
+                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                        >
+                                            Judul
+                                        </th>
+                                        <th
+                                            scope="col"
+                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                        >
+                                            Invoice
+                                        </th>
+
+                                        <th
+                                            scope="col"
+                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                        >
                                             Total Harga
                                         </th>
-                                        <th className="px-4 py-2">
+                                        <th
+                                            scope="col"
+                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                        >
                                             Tanggal Pinjam
                                         </th>
-                                        <th className="px-4 py-2">
+                                        <th
+                                            scope="col"
+                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                        >
                                             Tanggal Kembali
                                         </th>
-                                        <th className="px-4 py-2">Status</th>
-                                        <th className="px-4 py-2">Action</th>
+                                        <th
+                                            scope="col"
+                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                        >
+                                            Status
+                                        </th>
+                                        <th
+                                            scope="col"
+                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                        >
+                                            Action
+                                        </th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody className="bg-white divide-y divide-gray-200">
                                     {peminjaman.map((item, index) => (
                                         <tr key={item.id}>
                                             <td className="border px-4 py-2">

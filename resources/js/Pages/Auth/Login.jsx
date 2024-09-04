@@ -34,7 +34,7 @@ export default function Login({ status, canResetPassword }) {
                         <div className="text-center mb-8">
                             <Link href="/">
                                 <img
-                                    src="/storage/images/landing-pages/the-room.png"
+                                    src="https://res.cloudinary.com/dt91kxctr/image/upload/v1725191462/gk4ncoiz3kf04l32ysnm.png"
                                     alt="The Room 19"
                                     className="w-44 h-auto"
                                 />

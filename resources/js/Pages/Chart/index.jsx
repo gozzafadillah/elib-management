@@ -2,6 +2,9 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link } from "@inertiajs/react";
 import { Inertia } from "@inertiajs/inertia";
 import { useEffect, useState } from "react";
+import { usePage } from "@inertiajs/inertia-react";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer, toast } from "react-toastify";
 
 export default function ChartBooks({ auth }) {
     const formatDateToDateTimeLocal = (date) => {
@@ -9,6 +12,19 @@ export default function ChartBooks({ auth }) {
         local.setMinutes(local.getMinutes() - local.getTimezoneOffset());
         return local.toJSON().slice(0, 16);
     };
+
+    const { flash } = usePage().props;
+
+    useEffect(() => {
+        // Jika ada pesan sukses dari server
+        if (flash?.success) {
+            toast.success(flash?.success);
+        }
+        // Jika ada pesan error dari server
+        if (flash?.error) {
+            toast.error(flash?.error);
+        }
+    }, [flash]);
 
     // Set default start date to today and end date to one week from today
     const [startDate, setStartDate] = useState(
@@ -46,11 +62,22 @@ export default function ChartBooks({ auth }) {
     };
 
     const pinjamBuku = () => {
-        Inertia.post(route("peminjaman.store"), {
-            data: borrowedBooks,
-            start: startDate,
-            end: endDate,
-        });
+        Inertia.post(
+            route("peminjaman.store"),
+            {
+                data: borrowedBooks,
+                start: startDate,
+                end: endDate,
+            },
+            {
+                onSuccess: () => {
+                    toast.success("Berhasil meminjam buku");
+                },
+                onError: () => {
+                    toast.error("Gagal meminjam buku");
+                },
+            }
+        );
 
         localStorage.removeItem("borrowedBooks");
     };
@@ -64,6 +91,7 @@ export default function ChartBooks({ auth }) {
                 </h2>
             }
         >
+            <ToastContainer />
             <Head title="Buku" />
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -159,7 +187,7 @@ export default function ChartBooks({ auth }) {
                                                     }}
                                                 >
                                                     <img
-                                                        src={`/storage/images/buku/${book.image_path}`}
+                                                        src={`${book.image_path}`}
                                                         alt={book.judul}
                                                         style={{
                                                             maxWidth: "20%",

@@ -11,6 +11,21 @@ export default function PengembalianAdminDashboard({ auth, data }) {
     const [qrData, setQrData] = useState(null);
     const [devices, setDevices] = useState([]);
     const [selectedDeviceId, setSelectedDeviceId] = useState("");
+    const [isMobileView, setIsMobileView] = useState(false);
+
+    useEffect(() => {
+        // Check if the screen width is less than a certain threshold (e.g., 768px)
+        const handleResize = () => {
+            setIsMobileView(window.innerWidth < 1024);
+        };
+
+        window.addEventListener("resize", handleResize);
+        handleResize(); // Initial check on component mount
+
+        return () => {
+            window.removeEventListener("resize", handleResize);
+        };
+    }, []);
 
     useEffect(() => {
         // Fetch available video input devices (cameras)
@@ -87,60 +102,29 @@ export default function PengembalianAdminDashboard({ auth, data }) {
                     </div>
                 </div>
             </div>
-            <div className="py-12">
-                <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                        <div className="p-6 text-gray-900 dark:text-gray-100">
-                            Pengembalian
-                        </div>
-                        <div className="p-6 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
-                            <table className="table-auto w-full mt-4">
-                                <thead>
-                                    <tr>
-                                        <th className="px-4 py-2">No</th>
-                                        <th className="px-4 py-2">Invoice</th>
-                                        <th className="px-4 py-2">Nama</th>
-                                        <th className="px-4 py-2">
-                                            Tanggal Peminjaman
-                                        </th>
-                                        <th className="px-4 py-2">
-                                            Tanggal Pengembalian
-                                        </th>
-                                        <th className="px-4 py-2">Status</th>
-                                        <th className="px-4 py-2">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {data.map((item, index) => (
-                                        <tr key={item.id}>
-                                            <td className="border px-4 py-2">
-                                                {index + 1}
-                                            </td>
-                                            <td className="border px-4 py-2">
-                                                {item.invoice_number}
-                                            </td>
-                                            <td className="border px-4 py-2">
-                                                {item.pelanggan.nama}
-                                            </td>
-                                            <td className="border px-4 py-2">
-                                                {item.tanggal_pinjam}
-                                            </td>
-                                            <td className="border px-4 py-2">
-                                                {item.tanggal_kembali}
-                                            </td>
-                                            <td className="border px-4 py-2">
-                                                {item.status ==
-                                                "Dikembalikan" ? (
-                                                    <span className="bg-green-500 text-white font-bold py-2 px-4 mx-2 rounded">
-                                                        Selesai
-                                                    </span>
-                                                ) : (
-                                                    <span className="bg-yellow-500 text-white font-bold py-2 px-4 mx-2 rounded">
-                                                        Dipinjam
-                                                    </span>
-                                                )}
-                                            </td>
-                                            <td className="border px-4 py-2">
+            {/* Render table on larger screens and dropdown on mobile */}
+            {isMobileView ? (
+                <div className="py-12">
+                    <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                        <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                            <div className="p-6 text-gray-900 dark:text-gray-100">
+                                Pengembalian
+                            </div>
+                            <div className="p-6 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+                                {/* Dropdown for mobile view */}
+                                {data.map((item, index) => (
+                                    <div
+                                        key={item.id}
+                                        className="border-b py-4"
+                                    >
+                                        <div className="flex justify-between">
+                                            <div>
+                                                <p className="font-bold">
+                                                    {item.invoice_number}
+                                                </p>
+                                                <p>{item.pelanggan.nama}</p>
+                                            </div>
+                                            <div>
                                                 <button
                                                     onClick={() =>
                                                         openModal(item)
@@ -149,16 +133,100 @@ export default function PengembalianAdminDashboard({ auth, data }) {
                                                 >
                                                     Detail
                                                 </button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-
+            ) : (
+                <div className="py-12">
+                    <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                        <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                            <div className="p-6 text-gray-900 dark:text-gray-100">
+                                Pengembalian
+                            </div>
+                            <div className="p-6 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+                                {/* Table for larger screens */}
+                                <div className="overflow-x-auto">
+                                    <table className="table-auto w-full mt-4">
+                                        <thead>
+                                            <tr>
+                                                <th className="px-4 py-2">
+                                                    No
+                                                </th>
+                                                <th className="px-4 py-2">
+                                                    Invoice
+                                                </th>
+                                                <th className="px-4 py-2">
+                                                    Nama
+                                                </th>
+                                                <th className="px-4 py-2">
+                                                    Tanggal Peminjaman
+                                                </th>
+                                                <th className="px-4 py-2">
+                                                    Tanggal Pengembalian
+                                                </th>
+                                                <th className="px-4 py-2">
+                                                    Status
+                                                </th>
+                                                <th className="px-4 py-2">
+                                                    Action
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {data.map((item, index) => (
+                                                <tr key={item.id}>
+                                                    <td className="border px-4 py-2">
+                                                        {index + 1}
+                                                    </td>
+                                                    <td className="border px-4 py-2">
+                                                        {item.invoice_number}
+                                                    </td>
+                                                    <td className="border px-4 py-2">
+                                                        {item.pelanggan.nama}
+                                                    </td>
+                                                    <td className="border px-4 py-2">
+                                                        {item.tanggal_pinjam}
+                                                    </td>
+                                                    <td className="border px-4 py-2">
+                                                        {item.tanggal_kembali}
+                                                    </td>
+                                                    <td className="border px-4 py-2">
+                                                        {item.status ==
+                                                        "Dikembalikan" ? (
+                                                            <span className="bg-green-500 text-white font-bold py-2 px-4 mx-2 rounded">
+                                                                Selesai
+                                                            </span>
+                                                        ) : (
+                                                            <span className="bg-yellow-500 text-white font-bold py-2 px-4 mx-2 rounded">
+                                                                Dipinjam
+                                                            </span>
+                                                        )}
+                                                    </td>
+                                                    <td className="border px-4 py-2">
+                                                        <button
+                                                            onClick={() =>
+                                                                openModal(item)
+                                                            }
+                                                            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 mx-2 rounded"
+                                                        >
+                                                            Detail
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
             {/* Modal to display selected item details */}
             {isModalOpen && buku && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">

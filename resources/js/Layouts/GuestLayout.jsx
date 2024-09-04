@@ -3,9 +3,9 @@ import { useEffect, useState } from "react";
 export default function Guest({ children }) {
     const [currentImage, setCurrentImage] = useState(0);
     const images = [
-        "/storage/images/landing-pages/hero-the-room-1.jpeg",
-        "/storage/images/landing-pages/hero-the-room-2.jpeg",
-        "/storage/images/landing-pages/hero-the-room-3.jpeg",
+        "https://res.cloudinary.com/dt91kxctr/image/upload/v1725191475/fo2jkp5y8zldktimsigi.jpg",
+        "https://res.cloudinary.com/dt91kxctr/image/upload/v1725191467/mpmw8c1uj3ysbrrg5usd.jpg",
+        "https://res.cloudinary.com/dt91kxctr/image/upload/v1725191462/y4owjaxhkch6nusuj8lr.jpg",
     ];
 
     useEffect(() => {
@@ -22,7 +22,7 @@ export default function Guest({ children }) {
         <div className="flex min-h-screen">
             {/* Left Side - Image */}
             <div className="hidden lg:flex lg:w-1/2">
-                <div className="relative w-full h-screen overflow-hidden">
+                <div className="relative w-full h-100 overflow-hidden">
                     {images.map((image, index) => (
                         <img
                             key={index}
@@ -40,7 +40,7 @@ export default function Guest({ children }) {
 
             {/* Right Side - Form */}
             <div className="flex flex-col justify-center items-center lg:w-1/2 p-8 bg-gray-100 dark:bg-gray-900">
-                <div className="max-w-md w-full">{children}</div>
+                <div className="max-w-md w-full mt-10">{children}</div>
             </div>
         </div>
     );

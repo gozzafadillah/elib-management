@@ -5,6 +5,8 @@ import InputLabel from "@/Components/InputLabel";
 import PrimaryButton from "@/Components/PrimaryButton";
 import TextInput from "@/Components/TextInput";
 import { Head, Link, useForm } from "@inertiajs/react";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Register() {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -14,6 +16,7 @@ export default function Register() {
         password_confirmation: "",
         nik: "",
         alamat: "",
+        no_telp: "",
     });
 
     useEffect(() => {
@@ -25,19 +28,28 @@ export default function Register() {
     const submit = (e) => {
         e.preventDefault();
 
-        post(route("register"));
+        post(route("register"), {
+            preserveScroll: true,
+            onSuccess: () => {
+                toast.success("Registrasi berhasil");
+            },
+            onError: () => {
+                toast.error("Registrasi gagal");
+            },
+        });
     };
 
     return (
         <GuestLayout>
             <Head title="Register" />
+            <ToastContainer />
             <div className="flex h-4/5">
                 <div className="flex flex-col justify-center lg:w-auto p-8 bg-gray-100 dark:bg-gray-900">
                     <div className="max-w-md w-full mx-auto">
                         <div className="text-center mb-8">
                             <Link href="/">
                                 <img
-                                    src="/storage/images/landing-pages/the-room.png"
+                                    src="https://res.cloudinary.com/dt91kxctr/image/upload/v1725191462/gk4ncoiz3kf04l32ysnm.png"
                                     alt="The Room 19"
                                     className="w-44 h-auto"
                                 />
@@ -67,7 +79,7 @@ export default function Register() {
                                 />
                             </div>
 
-                            <div className="mt-4">
+                            <div className="mt-2">
                                 <InputLabel htmlFor="email" value="Email" />
 
                                 <TextInput
@@ -88,8 +100,70 @@ export default function Register() {
                                     className="mt-2"
                                 />
                             </div>
+                            <div className="mt-2">
+                                <InputLabel htmlFor="nik" value="NIK" />
 
-                            <div className="mt-4">
+                                <TextInput
+                                    id="nik"
+                                    name="nik"
+                                    value={data.nik}
+                                    className="mt-1 block w-full"
+                                    autoComplete="nik"
+                                    onChange={(e) =>
+                                        setData("nik", e.target.value)
+                                    }
+                                    required
+                                />
+
+                                <InputError
+                                    message={errors.nik}
+                                    className="mt-2"
+                                />
+                            </div>
+                            <div className="mt-2">
+                                <InputLabel
+                                    htmlFor="no_telp"
+                                    value="Nomor Telepon"
+                                />
+
+                                <TextInput
+                                    id="no_telp"
+                                    name="no_telp"
+                                    value={data.no_telp}
+                                    className="mt-1 block w-full"
+                                    autoComplete="no_telp"
+                                    onChange={(e) =>
+                                        setData("no_telp", e.target.value)
+                                    }
+                                    required
+                                />
+
+                                <InputError
+                                    message={errors.nik}
+                                    className="mt-2"
+                                />
+                            </div>
+                            <div className="mt-2">
+                                <InputLabel htmlFor="alamat" value="Alamat" />
+
+                                <textarea
+                                    id="alamat"
+                                    name="alamat"
+                                    value={data.alamat}
+                                    className="mt-1 block w-full"
+                                    autoComplete="alamat"
+                                    onChange={(e) =>
+                                        setData("alamat", e.target.value)
+                                    }
+                                    required
+                                />
+
+                                <InputError
+                                    message={errors.alamat}
+                                    className="mt-2"
+                                />
+                            </div>
+                            <div className="mt-2">
                                 <InputLabel
                                     htmlFor="password"
                                     value="Password"
@@ -107,59 +181,12 @@ export default function Register() {
                                     }
                                     required
                                 />
-
-                                <div className="mt-4">
-                                    <InputLabel htmlFor="nik" value="NIK" />
-
-                                    <TextInput
-                                        id="nik"
-                                        name="nik"
-                                        value={data.nik}
-                                        className="mt-1 block w-full"
-                                        autoComplete="nik"
-                                        onChange={(e) =>
-                                            setData("nik", e.target.value)
-                                        }
-                                        required
-                                    />
-
-                                    <InputError
-                                        message={errors.nik}
-                                        className="mt-2"
-                                    />
-                                </div>
-
-                                <div className="mt-4">
-                                    <InputLabel
-                                        htmlFor="alamat"
-                                        value="Alamat"
-                                    />
-
-                                    <textarea
-                                        id="alamat"
-                                        name="alamat"
-                                        value={data.alamat}
-                                        className="mt-1 block w-full"
-                                        autoComplete="alamat"
-                                        onChange={(e) =>
-                                            setData("alamat", e.target.value)
-                                        }
-                                        required
-                                    />
-
-                                    <InputError
-                                        message={errors.alamat}
-                                        className="mt-2"
-                                    />
-                                </div>
-
                                 <InputError
                                     message={errors.password}
                                     className="mt-2"
                                 />
                             </div>
-
-                            <div className="mt-4">
+                            <div className="mt-2">
                                 <InputLabel
                                     htmlFor="password_confirmation"
                                     value="Confirm Password"

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\BookReturned;
 use App\Models\Pelanggan;
 use App\Models\Peminjaman;
 use App\Models\User;
@@ -69,8 +70,6 @@ class PengembalianController extends Controller
             'telat' => $telat,
         ]);
 
-
-
         return redirect()->route('pengembalian.form', $peminjaman->id);
     }
 
@@ -93,12 +92,15 @@ class PengembalianController extends Controller
     public function bayarDenda(Request $request)
     {
         $id = $request->id;
-        $peminjaman = Peminjaman::where('id', $id)->firstOrFail();
+        $peminjaman = Peminjaman::with("pelanggan", "p_peminjaman.buku.kategori", "transaksi")->where('id', $id)->firstOrFail();
 
         $peminjaman->update([
             'status' => 'Dikembalikan',
             'denda' => $request->denda,
         ]);
+
+        // Memancarkan event untuk memberitahu klien
+        broadcast(new BookReturned($peminjaman))->toOthers();
 
         return redirect()->route('pengembalian.index');
     }
